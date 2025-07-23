@@ -4,5 +4,6 @@ data class AccountInfo(
     val accountId: String,
     val userId: String,
     val iban: String,
-    val accountNumber: String
+    val accountNumber: String,
+    val balance: Double
 )
