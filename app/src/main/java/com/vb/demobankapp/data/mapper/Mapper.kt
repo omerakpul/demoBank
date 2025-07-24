@@ -42,9 +42,10 @@ fun AccountInfo.toDto(): AccountInfoDto = AccountInfoDto(
 )
 
 fun CurrencyDto.toCurrencyList(): List<Currency> {
+    val amount = amount ?: 0.0
     val base = base ?: ""
     return rates?.map { (code, rate) ->
-        Currency(base = base, code = code, rate = rate)
+        Currency(amount = amount, base = base, code = code, rate = rate)
     } ?: emptyList()
 }
 
