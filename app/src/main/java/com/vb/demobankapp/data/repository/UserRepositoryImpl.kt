@@ -2,32 +2,33 @@ package com.vb.demobankapp.data.repository
 
 import com.vb.demobankapp.data.mapper.toDomain
 import com.vb.demobankapp.data.mapper.toDto
-import com.vb.demobankapp.data.remote.datasource.AccountInfoRemoteDataSource
-import com.vb.demobankapp.domain.model.AccountInfo
-import com.vb.demobankapp.domain.repository.AccountInfoRepository
+import com.vb.demobankapp.data.remote.datasource.UserRemoteDataSource
+import com.vb.demobankapp.domain.model.User
+import com.vb.demobankapp.domain.repository.UserRepository
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val remoteDataSource: AccountInfoRemoteDataSource
-) : AccountInfoRepository {
+    private val ds: UserRemoteDataSource
+) : UserRepository {
 
-    override fun addAccount(accountInfo: AccountInfo, onResult: (Boolean) -> Unit) {
-        remoteDataSource.addAccount(accountInfo.toDto(), onResult)
+    override fun addUser(user: User, onResult: (Boolean) -> Unit) {
+        ds.addUser(user.toDto(), onResult)
     }
 
-    override fun getAccountById(accountId: String, onResult: (AccountInfo?) -> Unit) {
-        remoteDataSource.getAccountById(accountId) { dto ->
+    override fun getUserById(userId: String, onResult: (User?) -> Unit) {
+        ds.getUserById(userId) { dto ->
             onResult(dto?.toDomain())
         }
     }
 
-    override fun deleteAccount(accountId: String, onResult: (Boolean) -> Unit) {
-        remoteDataSource.deleteAccount(accountId, onResult)
+    override fun deleteUser(userId: String, onResult: (Boolean) -> Unit) {
+        ds.deleteUser(userId, onResult)
     }
 
-    override fun getAccountByUserId(userId: String, onResult: (List<AccountInfo>) -> Unit) {
-        remoteDataSource.getAccountsByUserId(userId) {dtoList ->
+    override fun getAllUsers(onResult: (List<User>) -> Unit) {
+        ds.getAllUsers { dtoList ->
             onResult(dtoList.map { it.toDomain() })
         }
     }
+
 }
