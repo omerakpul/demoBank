@@ -1,5 +1,12 @@
 package com.vb.demobankapp.domain.usecase
 
-class DeleteUserUseCase {
-    // TODO: Implement use case logic
+import com.vb.demobankapp.domain.repository.UserRepository
+import javax.inject.Inject
+
+class DeleteUserUseCase @Inject constructor(
+    private val userRepository: UserRepository
+) {
+    suspend operator fun invoke(userId: String, onResult: (Boolean) -> Unit) {
+        return userRepository.deleteUser(userId, onResult)
+    }
 } 
