@@ -1,4 +1,4 @@
-package com.vb.demobankapp.ui.theme
+package com.vb.demobankapp.presentation.common.ui.theme
 
 import android.app.Activity
 import android.os.Build

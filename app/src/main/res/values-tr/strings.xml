@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Demo Bank Uygulaması</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Giriş Yap</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="welcome">Hoş Geldiniz</string>
+    <string name="create_account">Hesap Oluştur</string>
+    <string name="enter_code">Kodu Girin</string>
+    <string name="continue_button">Devam Et</string>
+    <string name="verify">Doğrula</string>
+    <string name="create_account_button">Hesap Oluştur</string>
+
+    <!-- Input Fields -->
+    <string name="phone_number">Telefon numarası</string>
+    <string name="name">Ad</string>
+    <string name="surname">Soyad</string>
+    <string name="birth_date">Doğum tarihi (GG/AA/YYYY)</string>
+    <string name="enter_otp">6 haneli kodu girin</string>
+
+    <!-- Messages -->
+    <string name="otp_sent_message">%1$s numarasına kod gönderdik</string>
+    <string name="resend_code">Kod gelmedi mi? Tekrar gönder</string>
+
+    <!-- Legal -->
+    <string name="terms_privacy">Devam ederek Kullanım Şartları ve Gizlilik Politikamızı kabul etmiş olursunuz</string>
+
+    <!-- Splash -->
+    <string name="splash_title">Yeni nesil bankacılık</string>
+    <string name="splash_subtitle">DEMOBANK</string>
+</resources>

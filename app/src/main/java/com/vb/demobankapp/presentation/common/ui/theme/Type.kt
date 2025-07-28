@@ -1,4 +1,4 @@
-package com.vb.demobankapp.ui.theme
+package com.vb.demobankapp.presentation.common.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

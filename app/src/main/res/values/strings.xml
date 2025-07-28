@@ -1,3 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">DemoBankApp</string>
+    <string name="app_name">Demo Bank App</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="welcome">Welcome</string>
+    <string name="create_account">Create Account</string>
+    <string name="enter_code">Enter Code</string>
+    <string name="continue_button">Continue</string>
+    <string name="verify">Verify</string>
+    <string name="create_account_button">Create Account</string>
+
+    <!-- Input Fields -->
+    <string name="phone_number">Phone number</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="birth_date">Birth date (DD/MM/YYYY)</string>
+    <string name="enter_otp">Enter 6-digit code</string>
+
+    <!-- Messages -->
+    <string name="otp_sent_message">We\'ve sent a code to %1$s</string>
+    <string name="resend_code">Didn\'t receive code? Resend</string>
+
+    <!-- Legal -->
+    <string name="terms_privacy">By continuing, you agree to our Terms of Service and Privacy Policy</string>
+
+    <!-- Splash -->
+    <string name="splash_title">Next generation banking</string>
+    <string name="splash_subtitle">DEMOBANK</string>
 </resources>
