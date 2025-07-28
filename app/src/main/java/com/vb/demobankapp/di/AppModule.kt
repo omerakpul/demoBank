@@ -9,6 +9,10 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import com.vb.demobankapp.BuildConfig
 import com.vb.demobankapp.data.remote.api.CurrencyApiService
+import com.vb.demobankapp.data.remote.datasource.UserRemoteDataSource
+import com.vb.demobankapp.data.repository.UserRepositoryImpl
+import com.vb.demobankapp.domain.repository.UserRepository
+import com.vb.demobankapp.domain.usecase.LoginUseCase
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
@@ -44,5 +48,33 @@ object AppModule {
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
+    }
+
+    // DataSource
+    @Provides
+    @Singleton
+    fun provideUserRemoteDataSource(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): UserRemoteDataSource {
+        return UserRemoteDataSource(db, auth)
+    }
+
+    // Repository
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        dataSource: UserRemoteDataSource
+    ): UserRepository {
+        return UserRepositoryImpl(dataSource)
+    }
+
+    // UseCase
+    @Provides
+    @Singleton
+    fun provideLoginUseCase(
+        repository: UserRepository
+    ): LoginUseCase {
+        return LoginUseCase(repository)
     }
 }
