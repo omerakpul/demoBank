@@ -42,4 +42,40 @@ class UserRemoteDataSource @Inject constructor(
             }
             .addOnFailureListener { onResult(emptyList()) }
     }
+
+    fun login(phoneNumber: String, onResult: (Result<String>) -> Unit) {
+        // Sadece OTP gönder
+        try {
+            // Burada SMS gönderme işlemi yapılır
+            onResult(Result.success("OTP_SENT"))
+        } catch (e: Exception) {
+            onResult(Result.failure(e))
+        }
+    }
+
+    fun validateOtp(phoneNumber: String, otp: String, onResult: (Result<UserDto?>) -> Unit) {
+        // OTP doğru mu kontrol et
+        if (otp == "123456") { // Gerçek uygulamada Firebase Auth kullanılır
+            // OTP doğru, telefon numarasına göre kullanıcıyı bul
+            db.collection("users")
+                .whereEqualTo("phoneNumber", phoneNumber)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (snapshot.isEmpty) {
+                        // Kullanıcı yok, null döner (register ekranına gidecek)
+                        onResult(Result.success(null))
+                    } else {
+                        // Kullanıcı var, kullanıcı bilgilerini döner (home'a gidecek)
+                        val user = snapshot.documents[0].toObject(UserDto::class.java)
+                        onResult(Result.success(user))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    onResult(Result.failure(exception))
+                }
+        } else {
+            // OTP yanlış
+            onResult(Result.failure(Exception("INVALID_OTP")))
+        }
+    }
 }

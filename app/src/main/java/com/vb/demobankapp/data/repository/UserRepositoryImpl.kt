@@ -31,4 +31,24 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun login(phoneNumber: String, onResult: (Result<String>) -> Unit) {
+        ds.login(phoneNumber, onResult)
+    }
+
+    override fun validateOtp(phoneNumber: String, otp: String, onResult: (Result<User?>) -> Unit) {
+        ds.validateOtp(phoneNumber, otp) { result ->
+            result.onSuccess { userDto ->
+                if (userDto == null) {
+                    // Kullanıcı yok, null döner (register ekranına gidecek)
+                    onResult(Result.success(null))
+                } else {
+                    // Kullanıcı var, domain'e çevir
+                    val user = userDto.toDomain()
+                    onResult(Result.success(user))
+                }
+            }.onFailure { error ->
+                onResult(Result.failure(error))
+            }
+        }
+    }
 }
