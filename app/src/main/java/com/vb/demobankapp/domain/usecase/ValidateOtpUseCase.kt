@@ -8,6 +8,6 @@ class ValidateOtpUseCase @Inject constructor(
     private val repository: UserRepository
 ) {
     suspend operator fun invoke(phoneNumber: String, otp: String, onResult: (Result<User?>) -> Unit) {
-        repository.validateOtp(phoneNumber, otp, onResult)
+        return repository.validateOtp(phoneNumber, otp, onResult)
     }
 } 
