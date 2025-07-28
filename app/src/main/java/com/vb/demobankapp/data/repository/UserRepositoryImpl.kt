@@ -1,5 +1,6 @@
 package com.vb.demobankapp.data.repository
 
+import android.app.Activity
 import com.vb.demobankapp.data.mapper.toDomain
 import com.vb.demobankapp.data.mapper.toDto
 import com.vb.demobankapp.data.remote.datasource.UserRemoteDataSource
@@ -31,8 +32,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun login(phoneNumber: String, onResult: (Result<String>) -> Unit) {
-        ds.login(phoneNumber, onResult)
+    override fun login(phoneNumber: String, activity: Activity, onResult: (Result<String>) -> Unit) {
+        ds.login(phoneNumber, activity, onResult)
     }
 
     override fun validateOtp(phoneNumber: String, otp: String, onResult: (Result<User?>) -> Unit) {
