@@ -1,33 +1,17 @@
-package com.vb.demobankapp.presentation.auth
+package com.vb.demobankapp.presentation.ui.auth.login
 
+import android.app.Activity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,20 +19,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vb.demobankapp.R
-import com.vb.demobankapp.presentation.common.ui.theme.BackgroundCream
-import com.vb.demobankapp.presentation.common.ui.theme.InputBackground
-import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
-import com.vb.demobankapp.presentation.common.ui.theme.TextDark
-import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
+import com.vb.demobankapp.presentation.common.ui.theme.*
 
 @Composable
-fun OtpScreen(
-    phoneNumber: String,
+fun LoginScreen(
     onBackClick: () -> Unit,
-    onVerifyClick: (String) -> Unit
+    onContinueClick: (String) -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var otpCode by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    val state by viewModel.state.collectAsState()
+
+    // OTP gönderildiğinde OTP ekranına git
+    LaunchedEffect(state) {
+        if (state is LoginState.OtpSent) {
+            onContinueClick(phoneNumber)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -75,18 +67,10 @@ fun OtpScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = stringResource(R.string.enter_code),
+            text = stringResource(R.string.welcome),
             fontWeight = FontWeight.Bold,
             color = TextDark,
             fontSize = 32.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = stringResource(R.string.otp_sent_message, phoneNumber),
-            color = TextPlaceholder,
-            fontSize = 16.sp
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -104,11 +88,11 @@ fun OtpScreen(
             )
         ) {
             OutlinedTextField(
-                value = otpCode,
-                onValueChange = { if (it.length <= 6) otpCode = it },
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
                 placeholder = {
                     Text(
-                        text = "******",
+                        text = stringResource(R.string.phone_number),
                         color = TextPlaceholder
                     )
                 },
@@ -121,7 +105,7 @@ fun OtpScreen(
                     unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                     focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
                 ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 singleLine = true
             )
         }
@@ -129,7 +113,11 @@ fun OtpScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onVerifyClick(otpCode) },
+            onClick = {
+                if (activity != null) {
+                    viewModel.sendOtp(phoneNumber, activity)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -138,12 +126,34 @@ fun OtpScreen(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = otpCode.length == 6
+            enabled = phoneNumber.isNotBlank() && state !is LoginState.Loading
         ) {
+            when (state) {
+                is LoginState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = TextDark
+                    )
+                }
+                else -> {
+                    Text(
+                        text = stringResource(R.string.continue_button),
+                        color = TextDark,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // Hata mesajı göster
+        if (state is LoginState.Error) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(R.string.verify),
-                color = TextDark,
-                fontWeight = FontWeight.Bold
+                text = (state as LoginState.Error).message,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
@@ -163,10 +173,9 @@ fun OtpScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun OtpScreenPreview() {
-    OtpScreen(
-        phoneNumber = "+90 000 000 00 00",
+fun LoginScreenPreview() {
+    LoginScreen(
         onBackClick = {},
-        onVerifyClick = {}
+        onContinueClick = {}
     )
 }

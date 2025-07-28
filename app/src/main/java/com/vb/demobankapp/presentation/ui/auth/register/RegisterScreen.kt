@@ -1,4 +1,4 @@
-package com.vb.demobankapp.presentation.auth
+package com.vb.demobankapp.presentation.ui.auth.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,11 +41,13 @@ import com.vb.demobankapp.presentation.common.ui.theme.TextDark
 import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     onBackClick: () -> Unit,
-    onContinueClick: (String) -> Unit
+    onRegisterClick: (String, String, String) -> Unit
 ) {
-    var phoneNumber by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -74,7 +74,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = stringResource(R.string.welcome),
+            text = stringResource(R.string.create_account),
             fontWeight = FontWeight.Bold,
             color = TextDark,
             fontSize = 32.sp
@@ -95,11 +95,11 @@ fun LoginScreen(
             )
         ) {
             OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it },
+                value = name,
+                onValueChange = { name = it },
                 placeholder = {
                     Text(
-                        text = stringResource(R.string.phone_number),
+                        text = stringResource(R.string.name),
                         color = TextPlaceholder
                     )
                 },
@@ -112,7 +112,78 @@ fun LoginScreen(
                     unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                     focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
                 ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                singleLine = true
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = InputBackground
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            )
+        ) {
+            OutlinedTextField(
+                value = surname,
+                onValueChange = { surname = it },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.surname),
+                        color = TextPlaceholder
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
+                ),
+                singleLine = true
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = InputBackground
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            )
+        ) {
+            OutlinedTextField(
+                value = birthDate,
+                onValueChange = { birthDate = it },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.birth_date),
+                        color = TextPlaceholder
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
+                ),
                 singleLine = true
             )
         }
@@ -120,7 +191,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onContinueClick(phoneNumber) },
+            onClick = { onRegisterClick(name, surname, birthDate) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -129,10 +200,10 @@ fun LoginScreen(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = phoneNumber.isNotBlank()
+            enabled = name.isNotBlank() && surname.isNotBlank() && birthDate.isNotBlank()
         ) {
             Text(
-                text = stringResource(R.string.continue_button),
+                text = stringResource(R.string.create_account_button),
                 color = TextDark,
                 fontWeight = FontWeight.Bold
             )
@@ -154,9 +225,9 @@ fun LoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(
+fun RegisterScreenPreview() {
+    RegisterScreen(
         onBackClick = {},
-        onContinueClick = {}
+        onRegisterClick = { _, _, _ -> }
     )
 }

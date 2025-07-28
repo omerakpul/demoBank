@@ -1,4 +1,4 @@
-package com.vb.demobankapp.presentation.auth
+package com.vb.demobankapp.presentation.ui.auth.otp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,13 +43,12 @@ import com.vb.demobankapp.presentation.common.ui.theme.TextDark
 import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
 
 @Composable
-fun RegisterScreen(
+fun OtpScreen(
+    phoneNumber: String,
     onBackClick: () -> Unit,
-    onRegisterClick: (String, String, String) -> Unit
+    onVerifyClick: (String) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var surname by remember { mutableStateOf("") }
-    var birthDate by remember { mutableStateOf("") }
+    var otpCode by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -74,10 +75,18 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = stringResource(R.string.create_account),
+            text = stringResource(R.string.enter_code),
             fontWeight = FontWeight.Bold,
             color = TextDark,
             fontSize = 32.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(R.string.otp_sent_message, phoneNumber),
+            color = TextPlaceholder,
+            fontSize = 16.sp
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -95,11 +104,11 @@ fun RegisterScreen(
             )
         ) {
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = otpCode,
+                onValueChange = { if (it.length <= 6) otpCode = it },
                 placeholder = {
                     Text(
-                        text = stringResource(R.string.name),
+                        text = "******",
                         color = TextPlaceholder
                     )
                 },
@@ -112,78 +121,7 @@ fun RegisterScreen(
                     unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                     focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
                 ),
-                singleLine = true
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = InputBackground
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            )
-        ) {
-            OutlinedTextField(
-                value = surname,
-                onValueChange = { surname = it },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.surname),
-                        color = TextPlaceholder
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
-                ),
-                singleLine = true
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = InputBackground
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            )
-        ) {
-            OutlinedTextField(
-                value = birthDate,
-                onValueChange = { birthDate = it },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.birth_date),
-                        color = TextPlaceholder
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true
             )
         }
@@ -191,7 +129,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onRegisterClick(name, surname, birthDate) },
+            onClick = { onVerifyClick(otpCode) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -200,10 +138,10 @@ fun RegisterScreen(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = name.isNotBlank() && surname.isNotBlank() && birthDate.isNotBlank()
+            enabled = otpCode.length == 6
         ) {
             Text(
-                text = stringResource(R.string.create_account_button),
+                text = stringResource(R.string.verify),
                 color = TextDark,
                 fontWeight = FontWeight.Bold
             )
@@ -225,9 +163,10 @@ fun RegisterScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(
+fun OtpScreenPreview() {
+    OtpScreen(
+        phoneNumber = "+90 000 000 00 00",
         onBackClick = {},
-        onRegisterClick = { _, _, _ -> }
+        onVerifyClick = {}
     )
 }
