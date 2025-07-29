@@ -29,4 +29,18 @@
     <!-- Splash -->
     <string name="splash_title">Next generation banking</string>
     <string name="splash_subtitle">DEMOBANK</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_back">Welcome back</string>
+    <string name="main_account">Main Account</string>
+    <string name="iban">IBAN</string>
+    <string name="copy">Copy</string>
+    <string name="transfer">Transfer</string>
+    <string name="currency">Currency</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="arrow_right">Arrow Right</string>
+    <string name="loading">Loading...</string>
+    <string name="account_name">%1$s Account</string>
 </resources>

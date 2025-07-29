@@ -29,4 +29,18 @@
     <!-- Splash -->
     <string name="splash_title">Yeni nesil bankacılık</string>
     <string name="splash_subtitle">DEMOBANK</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_back">Tekrar hoş geldin</string>
+    <string name="main_account">Ana Hesap</string>
+    <string name="iban">IBAN</string>
+    <string name="copy">Kopyala</string>
+    <string name="transfer">Transfer</string>
+    <string name="currency">Döviz</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="profile">Profil</string>
+    <string name="quick_actions">Hızlı İşlemler</string>
+    <string name="arrow_right">Sağ Ok</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="account_name">%1$s Hesabı</string>
 </resources>
