@@ -113,7 +113,7 @@ class UserRemoteDataSource @Inject constructor(
                             onResult(Result.failure(exception))
                         }
                 } else {
-                    onResult(Result.failure(task.exception ?: Exception("INVALID_OTP")))
+                    onResult(Result.failure(task.exception ?: Exception("Geçersiz OTP kodu")))
                 }
             }
     }
