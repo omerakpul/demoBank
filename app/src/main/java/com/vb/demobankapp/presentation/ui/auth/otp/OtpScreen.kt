@@ -16,18 +16,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vb.demobankapp.R
 import com.vb.demobankapp.presentation.common.ui.theme.BackgroundCream
 import com.vb.demobankapp.presentation.common.ui.theme.InputBackground
@@ -46,9 +51,17 @@ import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
 fun OtpScreen(
     phoneNumber: String,
     onBackClick: () -> Unit,
-    onVerifyClick: (String) -> Unit
+    onVerifySuccess: () -> Unit,
+    viewModel: OtpViewModel = hiltViewModel()
 ) {
     var otpCode by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state) {
+        if (state is OtpState.Success) {
+            onVerifySuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -81,16 +94,16 @@ fun OtpScreen(
             fontSize = 32.sp
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(R.string.otp_sent_message, phoneNumber),
             color = TextPlaceholder,
-            fontSize = 16.sp
+            fontSize = 14.sp
         )
 
         Spacer(modifier = Modifier.height(32.dp))
-
+        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,10 +118,14 @@ fun OtpScreen(
         ) {
             OutlinedTextField(
                 value = otpCode,
-                onValueChange = { if (it.length <= 6) otpCode = it },
+                onValueChange = {
+                    if (it.length <= 6) {
+                        otpCode = it
+                    }
+                },
                 placeholder = {
                     Text(
-                        text = "******",
+                        text = stringResource(R.string.enter_otp),
                         color = TextPlaceholder
                     )
                 },
@@ -116,10 +133,10 @@ fun OtpScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true
@@ -129,7 +146,9 @@ fun OtpScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onVerifyClick(otpCode) },
+            onClick = {
+                viewModel.validateOtp(phoneNumber, otpCode)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -138,19 +157,40 @@ fun OtpScreen(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = otpCode.length == 6
+            enabled = otpCode.length == 6 && state !is OtpState.Loading
         ) {
+            when (state) {
+                is OtpState.Loading -> {
+                    CircularProgressIndicator(
+                        color = TextDark,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+                else -> {
+                    Text(
+                        text = stringResource(R.string.verify),
+                        color = TextDark,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        if (state is OtpState.Error) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(R.string.verify),
-                color = TextDark,
-                fontWeight = FontWeight.Bold
+                text = (state as OtpState.Error).message,
+                color = Color.Red,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = stringResource(R.string.terms_privacy),
+            text = stringResource(R.string.resend_code),
             color = TextPlaceholder,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
@@ -165,8 +205,8 @@ fun OtpScreen(
 @Composable
 fun OtpScreenPreview() {
     OtpScreen(
-        phoneNumber = "+90 000 000 00 00",
+        phoneNumber = "+90 537 971 53 34",
         onBackClick = {},
-        onVerifyClick = {}
+        onVerifySuccess = {}
     )
 }
