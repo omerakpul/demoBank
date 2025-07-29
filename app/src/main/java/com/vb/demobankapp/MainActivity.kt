@@ -13,6 +13,7 @@ import com.vb.demobankapp.presentation.ui.auth.register.RegisterScreen
 import com.vb.demobankapp.presentation.ui.home.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
+// MainActivity.kt
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
