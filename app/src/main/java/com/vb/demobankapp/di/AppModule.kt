@@ -9,17 +9,22 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import com.vb.demobankapp.BuildConfig
 import com.vb.demobankapp.data.remote.api.CurrencyApiService
+import com.vb.demobankapp.data.remote.datasource.AccountInfoRemoteDataSource
+import com.vb.demobankapp.data.remote.datasource.CurrencyRemoteDataSource
 import com.vb.demobankapp.data.remote.datasource.UserRemoteDataSource
+import com.vb.demobankapp.data.repository.AccountInfoRepositoryImpl
+import com.vb.demobankapp.data.repository.CurrencyRepositoryImpl
 import com.vb.demobankapp.data.repository.UserRepositoryImpl
+import com.vb.demobankapp.domain.repository.AccountInfoRepository
+import com.vb.demobankapp.domain.repository.CurrencyRepository
 import com.vb.demobankapp.domain.repository.UserRepository
-import com.vb.demobankapp.domain.usecase.LoginUseCase
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    // Retrofit Instance
+
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
@@ -29,28 +34,24 @@ object AppModule {
             .build()
     }
 
-    // Currency API Service
     @Provides
     @Singleton
     fun provideCurrencyApiService(retrofit: Retrofit): CurrencyApiService {
         return retrofit.create(CurrencyApiService::class.java)
     }
 
-    // Firestore
     @Provides
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
 
-    // Authentication
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
 
-    // DataSource
     @Provides
     @Singleton
     fun provideUserRemoteDataSource(
@@ -60,7 +61,22 @@ object AppModule {
         return UserRemoteDataSource(db, auth)
     }
 
-    // Repository
+    @Provides
+    @Singleton
+    fun provideAccountInfoRemoteDataSource(
+        db: FirebaseFirestore
+    ): AccountInfoRemoteDataSource {
+        return AccountInfoRemoteDataSource(db)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyRemoteDataSource(
+        apiService: CurrencyApiService
+    ): CurrencyRemoteDataSource {
+        return CurrencyRemoteDataSource(apiService)
+    }
+
     @Provides
     @Singleton
     fun provideUserRepository(
@@ -69,12 +85,19 @@ object AppModule {
         return UserRepositoryImpl(dataSource)
     }
 
-    // UseCase
     @Provides
     @Singleton
-    fun provideLoginUseCase(
-        repository: UserRepository
-    ): LoginUseCase {
-        return LoginUseCase(repository)
+    fun provideAccountInfoRepository(
+        dataSource: AccountInfoRemoteDataSource
+    ): AccountInfoRepository {
+        return AccountInfoRepositoryImpl(dataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyRepository(
+        dataSource: CurrencyRemoteDataSource
+    ): CurrencyRepository {
+        return CurrencyRepositoryImpl(dataSource)
     }
 }
