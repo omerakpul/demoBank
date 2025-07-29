@@ -32,7 +32,8 @@ fun AccountInfoDto.toDomain(): AccountInfo = AccountInfo(
     userId = userId ?: "",
     iban = iban ?: "",
     accountNumber = accountNumber ?: "",
-    balance = balance ?: 0.0
+    balance = balance ?: 0.0,
+    accountType = accountType ?: "TRY"
 )
 
 fun AccountInfo.toDto(): AccountInfoDto = AccountInfoDto(
@@ -40,7 +41,8 @@ fun AccountInfo.toDto(): AccountInfoDto = AccountInfoDto(
     userId = userId,
     iban = iban,
     accountNumber = accountNumber,
-    balance = balance
+    balance = balance,
+    accountType = accountType
 )
 
 fun CurrencyDto.toCurrencyList(): List<Currency> {
