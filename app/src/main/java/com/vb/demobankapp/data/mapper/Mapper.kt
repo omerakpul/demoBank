@@ -10,7 +10,6 @@ import com.vb.demobankapp.domain.model.CurrencyConversion
 import com.vb.demobankapp.domain.model.User
 
 fun UserDto.toDomain(): User = User(
-    id = id ?: "",
     name = name ?: "",
     surname = surname ?: "",
     phoneNumber = phoneNumber ?: "",
@@ -20,7 +19,6 @@ fun UserDto.toDomain(): User = User(
 )
 
 fun User.toDto(): UserDto = UserDto(
-    id = id,
     name = name,
     surname = surname,
     phoneNumber = phoneNumber,
