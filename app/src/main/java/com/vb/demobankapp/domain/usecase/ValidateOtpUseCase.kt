@@ -5,9 +5,13 @@ import com.vb.demobankapp.domain.repository.UserRepository
 import javax.inject.Inject
 
 class ValidateOtpUseCase @Inject constructor(
-    private val repository: UserRepository
+    private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(phoneNumber: String, otp: String, onResult: (Result<User?>) -> Unit) {
-        return repository.validateOtp(phoneNumber, otp, onResult)
+    suspend operator fun invoke(
+        phoneNumber: String,
+        otp: String,
+        onResult: (Result<User?>) -> Unit
+    ) {
+        return userRepository.validateOtp(phoneNumber, otp, onResult)
     }
 } 
