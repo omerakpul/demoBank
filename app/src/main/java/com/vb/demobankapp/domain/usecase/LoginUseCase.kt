@@ -5,9 +5,13 @@ import com.vb.demobankapp.domain.repository.UserRepository
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
-    private val repository: UserRepository
+    private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(phoneNumber: String, activity: Activity, onResult: (Result<String>) -> Unit) {
-        return repository.login(phoneNumber, activity, onResult)
+    suspend operator fun invoke(
+        phoneNumber: String,
+        activity: Activity,
+        onResult: (Result<String>) -> Unit
+    ) {
+        return userRepository.login(phoneNumber, activity, onResult)
     }
 }
