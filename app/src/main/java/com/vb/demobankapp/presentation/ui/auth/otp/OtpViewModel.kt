@@ -20,9 +20,13 @@ class OtpViewModel @Inject constructor(
     fun validateOtp(phoneNumber: String, otp: String) {
         viewModelScope.launch {
             _state.value = OtpState.Loading
+
             validateOtpUseCase(phoneNumber, otp) { result ->
                 result.onSuccess { user ->
+                    if(user != null)
                     _state.value = OtpState.Success
+                    else
+                        _state.value = OtpState.UserNotFound
                 }.onFailure { error ->
                     _state.value = OtpState.Error(error.message ?: "OTP doğrulanamadı")
                 }

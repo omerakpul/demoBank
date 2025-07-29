@@ -52,14 +52,17 @@ fun OtpScreen(
     phoneNumber: String,
     onBackClick: () -> Unit,
     onVerifySuccess: () -> Unit,
+    onUserNotFound: () -> Unit,
     viewModel: OtpViewModel = hiltViewModel()
 ) {
     var otpCode by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(state) {
-        if (state is OtpState.Success) {
-            onVerifySuccess()
+        when (state) {
+            is OtpState.Success -> onVerifySuccess()
+            is OtpState.UserNotFound -> onUserNotFound()
+            else -> {}
         }
     }
 
@@ -207,6 +210,7 @@ fun OtpScreenPreview() {
     OtpScreen(
         phoneNumber = "+90 537 971 53 34",
         onBackClick = {},
-        onVerifySuccess = {}
+        onVerifySuccess = {},
+        onUserNotFound = {}
     )
 }

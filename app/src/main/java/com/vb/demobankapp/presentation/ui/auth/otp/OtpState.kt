@@ -5,4 +5,5 @@ sealed class OtpState {
     data object Loading : OtpState()
     data class Error(val message: String) : OtpState()
     data object Success : OtpState()
+    data object UserNotFound : OtpState()
 }
