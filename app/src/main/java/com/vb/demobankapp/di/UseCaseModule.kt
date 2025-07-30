@@ -1,5 +1,6 @@
 package com.vb.demobankapp.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.repository.AccountInfoRepository
 import com.vb.demobankapp.domain.repository.CurrencyRepository
 import com.vb.demobankapp.domain.repository.UserRepository
@@ -76,9 +77,10 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun provideAddAccountUseCase(
-        repository: AccountInfoRepository
+        repository: AccountInfoRepository,
+        auth: FirebaseAuth
     ): AddAccountUseCase {
-        return AddAccountUseCase(repository)
+        return AddAccountUseCase(repository,auth)
     }
 
     @Provides
