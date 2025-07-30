@@ -53,7 +53,7 @@ fun HomeScreen(
             is HomeState.Success -> {
                 currentState.accounts.forEach { account ->
                     AccountCard(
-                        accountName = stringResource(R.string.account_name, account.accountType),
+                        accountName = account.accountName,
                         accountNumber = account.iban,
                         balance = "${account.balance} ${account.accountType}"
                     )

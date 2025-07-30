@@ -79,12 +79,12 @@ fun AccountCard(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun AccountCardPreview() {
-    AccountCard(
-        accountName = "TRY Hesabı",
-        accountNumber = "TR12 3456 7890 1234 5678 9012 34",
-        balance = "12,345.67 TL"
-    )
+@Preview
+fun AccountCardPreview(){
+        AccountCard(
+            accountName = "Preview",
+            accountNumber = "1234 5678 9012 3456",
+            balance = "100.00 TL"
+        )
 }

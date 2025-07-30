@@ -26,11 +26,17 @@ fun AddAccountScreen(
     var accountName by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
 
-    // Success durumunda geri dön
+    // Success durumunda geri dön ve state'i sıfırla
     LaunchedEffect(state) {
         if (state is AddAccountState.Success) {
+            viewModel.resetState() // State'i sıfırla
             onBackClick()
         }
+    }
+
+    // Screen'e her girişte state'i sıfırla
+    LaunchedEffect(Unit) {
+        viewModel.resetState()
     }
 
     Column(
@@ -40,7 +46,6 @@ fun AddAccountScreen(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Üstte geri butonu
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -55,14 +60,12 @@ fun AddAccountScreen(
             Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(32.dp))
-        // Başlık
         Text(
             text = "Yeni TRY Hesabı Ekle",
             color = TextDark,
             fontSize = 24.sp
         )
         Spacer(modifier = Modifier.height(32.dp))
-        // Hesap adı inputu
         OutlinedTextField(
             value = accountName,
             onValueChange = { accountName = it },
@@ -81,7 +84,6 @@ fun AddAccountScreen(
             shape = RoundedCornerShape(12.dp)
         )
         Spacer(modifier = Modifier.height(32.dp))
-        // Ekle butonu
         Button(
             onClick = {
                 viewModel.addAccount(accountName)
@@ -102,8 +104,6 @@ fun AddAccountScreen(
                 Text("Hesap Ekle", color = TextDark)
             }
         }
-
-        // Hata mesajı
         if (state is AddAccountState.Error) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -113,13 +113,4 @@ fun AddAccountScreen(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddAccountScreenPreview() {
-    AddAccountScreen(
-        onBackClick = {},
-        onAddClick = {}
-    )
 }

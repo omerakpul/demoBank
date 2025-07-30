@@ -28,4 +28,8 @@ class AddAccountViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetState() {
+        _state.value = AddAccountState.Idle
+    }
 }
