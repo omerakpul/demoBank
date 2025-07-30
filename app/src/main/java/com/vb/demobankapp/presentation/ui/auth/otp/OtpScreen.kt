@@ -52,7 +52,7 @@ fun OtpScreen(
     phoneNumber: String,
     onBackClick: () -> Unit,
     onVerifySuccess: () -> Unit,
-    onUserNotFound: () -> Unit,
+    onUserNotFound: (String) -> Unit,
     viewModel: OtpViewModel = hiltViewModel()
 ) {
     var otpCode by remember { mutableStateOf("") }
@@ -61,7 +61,7 @@ fun OtpScreen(
     LaunchedEffect(state) {
         when (state) {
             is OtpState.Success -> onVerifySuccess()
-            is OtpState.UserNotFound -> onUserNotFound()
+            is OtpState.UserNotFound -> onUserNotFound(phoneNumber)
             else -> {}
         }
     }

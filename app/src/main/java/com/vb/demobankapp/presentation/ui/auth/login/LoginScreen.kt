@@ -2,13 +2,28 @@ package com.vb.demobankapp.presentation.ui.auth.login
 
 import android.app.Activity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,21 +36,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vb.demobankapp.R
-import com.vb.demobankapp.presentation.common.ui.theme.*
+import com.vb.demobankapp.presentation.common.ui.theme.BackgroundCream
+import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
+import com.vb.demobankapp.presentation.common.ui.theme.TextDark
+import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
 
 @Composable
 fun LoginScreen(
-    onBackClick: () -> Unit,
     onContinueClick: (String) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     var phoneNumber by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
     val context = LocalContext.current
     val activity = context as? Activity
 
     val state by viewModel.state.collectAsState()
 
-    // OTP gönderildiğinde OTP ekranına git
+    // Telefon numarası kontrolü
+    fun validateAndFormatPhoneNumber(text: String): String {
+        // Sadece rakamları al
+        val digitsOnly = text.filter { it.isDigit() }
+
+        // Başına 0 koymuşsa uyarı ver
+        if (digitsOnly.startsWith("0")) {
+            showError = true
+            errorMessage = "Numaranızın başına 0 koymayın"
+            return phoneNumber // Eski değeri koru
+        }
+
+        // 10 haneyi geçerse hiçbir şey yapma (eski değeri koru)
+        if (digitsOnly.length > 10) {
+            return phoneNumber
+        }
+
+        // Hata yoksa hata mesajını temizle
+        showError = false
+        errorMessage = ""
+
+        return digitsOnly
+    }
+
     LaunchedEffect(state) {
         if (state is LoginState.OtpSent) {
             onContinueClick(phoneNumber)
@@ -46,114 +89,93 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundCream)
-            .padding(horizontal = 24.dp)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = TextDark
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(80.dp))
 
         Text(
             text = stringResource(R.string.welcome),
             fontWeight = FontWeight.Bold,
             color = TextDark,
-            fontSize = 32.sp
+            fontSize = 28.sp
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = InputBackground
+        // Telefon numarası input
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = { newValue ->
+                phoneNumber = validateAndFormatPhoneNumber(newValue)
+            },
+            placeholder = {
+                Text(
+                    text = "5XX XXX XX XX",
+                    color = TextPlaceholder
+                )
+            },
+            modifier = Modifier.width(200.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = if (showError) MaterialTheme.colorScheme.error else PrimaryYellow,
+                unfocusedBorderColor = if (showError) MaterialTheme.colorScheme.error else TextPlaceholder
             ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            )
-        ) {
-            OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.phone_number),
-                        color = TextPlaceholder
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                singleLine = true
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            singleLine = true
+        )
+
+        // Hata mesajı
+        if (showError) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             onClick = {
                 if (activity != null) {
-                    viewModel.sendOtp(phoneNumber, activity)
+                    // +90 ekleyip gönder
+                    val fullNumber = "+90" + phoneNumber
+                    viewModel.sendOtp(fullNumber, activity)
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
+            enabled = phoneNumber.length == 10 && !showError && state !is LoginState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = phoneNumber.isNotBlank() && state !is LoginState.Loading
+            modifier = Modifier
+                .width(200.dp)
+                .height(48.dp)
         ) {
-            when (state) {
-                is LoginState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = TextDark
-                    )
-                }
-                else -> {
-                    Text(
-                        text = stringResource(R.string.continue_button),
-                        color = TextDark,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            if (state is LoginState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = TextDark
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.continue_button),
+                    color = TextDark,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
 
-        // Hata mesajı göster
+        // ViewModel'den gelen hata mesajı
         if (state is LoginState.Error) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = (state as LoginState.Error).message,
                 color = MaterialTheme.colorScheme.error,
                 fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                textAlign = TextAlign.Center
             )
         }
 
@@ -163,10 +185,7 @@ fun LoginScreen(
             text = stringResource(R.string.terms_privacy),
             color = TextPlaceholder,
             fontSize = 12.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -175,7 +194,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(
-        onBackClick = {},
         onContinueClick = {}
     )
 }

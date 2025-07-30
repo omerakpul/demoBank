@@ -1,6 +1,7 @@
 package com.vb.demobankapp.presentation.ui.auth.register
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,19 +10,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +51,11 @@ import com.vb.demobankapp.presentation.common.ui.theme.InputBackground
 import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
 import com.vb.demobankapp.presentation.common.ui.theme.TextDark
 import com.vb.demobankapp.presentation.common.ui.theme.TextPlaceholder
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     phoneNumber: String,
@@ -57,8 +66,16 @@ fun RegisterScreen(
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
     var birthDate by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
+
+    // Tarih formatlaması
+    fun formatDate(timestamp: Long): String {
+        val date = Date(timestamp)
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return formatter.format(date)
+    }
 
     LaunchedEffect(state) {
         if (state is RegisterState.Success) {
@@ -99,6 +116,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Name input
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -135,6 +153,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Surname input
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -171,10 +190,12 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Birthdate input (DatePicker ile)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .clickable { showDatePicker = true },
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
                 containerColor = InputBackground
@@ -183,27 +204,37 @@ fun RegisterScreen(
                 defaultElevation = 0.dp
             )
         ) {
-            OutlinedTextField(
-                value = birthDate,
-                onValueChange = { birthDate = it },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.birth_date),
-                        color = TextPlaceholder
-                    )
-                },
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = birthDate,
+                    onValueChange = { }, // Değişikliği engelle
+                    placeholder = {
+                        Text(
+                            text = "Doğum tarihi seçin",
+                            color = TextPlaceholder
+                        )
+                    },
+                    modifier = Modifier.weight(1f),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent
+                    ),
+                    singleLine = true,
+                    readOnly = true // Sadece okuma
+                )
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = "Tarih seç",
+                    tint = TextPlaceholder
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -220,7 +251,10 @@ fun RegisterScreen(
                 containerColor = PrimaryYellow,
                 disabledContainerColor = PrimaryYellow.copy(alpha = 0.5f)
             ),
-            enabled = name.isNotBlank() && surname.isNotBlank() && birthDate.isNotBlank() && state !is RegisterState.Loading
+            enabled = name.isNotBlank() &&
+                    surname.isNotBlank() &&
+                    birthDate.isNotBlank() &&
+                    state !is RegisterState.Loading
         ) {
             when (state) {
                 is RegisterState.Loading -> {
@@ -252,6 +286,36 @@ fun RegisterScreen(
         }
 
         Spacer(modifier = Modifier.weight(1f))
+    }
+
+    // DatePicker Dialog
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = System.currentTimeMillis()
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { timestamp ->
+                            birthDate = formatDate(timestamp)
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("Tamam")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("İptal")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
     }
 }
 
