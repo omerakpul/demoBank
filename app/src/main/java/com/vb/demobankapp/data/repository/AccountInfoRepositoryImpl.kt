@@ -25,9 +25,14 @@ class AccountInfoRepositoryImpl @Inject constructor(
         ds.deleteAccount(accountId, onResult)
     }
 
-    override fun getAccountByUserId(userId: String, onResult: (List<AccountInfo>) -> Unit) {
-        ds.getAccountsByUserId(userId) {dtoList ->
-            onResult(dtoList.map { it.toDomain() })
+    override fun getAccountByUserId(userId: String, onResult: (Result<List<AccountInfo>>) -> Unit) {
+        ds.getAccountsByUserId(userId) { dtoList ->
+            try {
+                val accounts = dtoList.map { it.toDomain() }
+                onResult(Result.success(accounts))
+            } catch (e: Exception) {
+                onResult(Result.failure(e))
+            }
         }
     }
 }

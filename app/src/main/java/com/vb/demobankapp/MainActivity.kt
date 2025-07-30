@@ -49,7 +49,10 @@ class MainActivity : ComponentActivity() {
                 "home" -> {
                     HomeScreen(
                         userId = "123",
-                        onAddAccountClick = { },
+                        onAddAccountClick = {
+                            // Account ekleme işlemi burada yapılacak
+                            // Şimdilik boş bırakıyoruz, HomeViewModel'de handle edilecek
+                        },
                         onTransferClick = { },
                         onCurrencyClick = { }
                     )

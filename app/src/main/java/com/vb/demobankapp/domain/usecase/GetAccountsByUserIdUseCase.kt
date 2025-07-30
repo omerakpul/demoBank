@@ -7,7 +7,10 @@ import javax.inject.Inject
 class GetAccountsByUserIdUseCase @Inject constructor(
     private val accountRepository: AccountInfoRepository
 ) {
-    suspend operator fun invoke(userId: String, onResult: (List<AccountInfo>) -> Unit) {
+    suspend operator fun invoke(
+        userId: String,
+        onResult: (Result<List<AccountInfo>>) -> Unit
+    ) {
         return accountRepository.getAccountByUserId(userId, onResult)
     }
-} 
+}

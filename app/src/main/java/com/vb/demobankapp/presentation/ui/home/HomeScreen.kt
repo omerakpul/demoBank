@@ -5,7 +5,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,50 +40,59 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (state.isLoading) {
-            Text(stringResource(R.string.loading))
-        } else if (state.accounts.isEmpty()) {
-            AddAccountCard(
-                onClick = onAddAccountClick,
-                isFirstCard = true
-            )
-        } else {
-            state.accounts.forEach { account ->
-                AccountCard(
-                    accountName = stringResource(R.string.account_name, account.accountType),
-                    accountNumber = account.iban,
-                    balance = "${account.balance} ${account.accountType}"
+        when (val currentState = state) {
+            is HomeState.Loading -> {
+                Text(stringResource(R.string.loading))
+            }
+            is HomeState.Empty -> {
+                AddAccountCard(
+                    onClick = onAddAccountClick,
+                    isFirstCard = true
                 )
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            AddAccountCard(
-                onClick = onAddAccountClick,
-                isFirstCard = false
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Button(
-                    onClick = onTransferClick,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(stringResource(R.string.transfer))
+            is HomeState.Success -> {
+                currentState.accounts.forEach { account ->
+                    AccountCard(
+                        accountName = stringResource(R.string.account_name, account.accountType),
+                        accountNumber = account.iban,
+                        balance = "${account.balance} ${account.accountType}"
+                    )
                 }
 
-                Button(
-                    onClick = onCurrencyClick,
-                    modifier = Modifier.weight(1f)
+                Spacer(modifier = Modifier.height(12.dp))
+
+                AddAccountCard(
+                    onClick = onAddAccountClick,
+                    isFirstCard = false
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(stringResource(R.string.currency))
+                    Button(
+                        onClick = onTransferClick,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.transfer))
+                    }
+
+                    Button(
+                        onClick = onCurrencyClick,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.currency))
+                    }
                 }
+            }
+            is HomeState.Error -> {
+                Text(
+                    text = currentState.message,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
 }
-

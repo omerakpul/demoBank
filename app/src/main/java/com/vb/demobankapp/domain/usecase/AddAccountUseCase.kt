@@ -7,7 +7,32 @@ import javax.inject.Inject
 class AddAccountUseCase @Inject constructor(
     private val accountRepository: AccountInfoRepository
 ) {
-    suspend operator fun invoke(account: AccountInfo, onResult: (Boolean) -> Unit) {
+    suspend operator fun invoke(userId: String, onResult: (Boolean) -> Unit) {
+        val iban = generateUniqueIban()
+        val accountNumber = generateUniqueAccountNumber()
+
+        val account = AccountInfo(
+            accountId = "",
+            userId = userId,
+            iban = iban,
+            accountNumber = accountNumber,
+            balance = 5000.0,
+            accountType = "TRY"
+        )
         return accountRepository.addAccount(account, onResult)
+    }
+
+    fun generateUniqueIban(): String {
+        // TR + timestamp son 8 hanesi + random 4 hane
+        val timestamp = System.currentTimeMillis().toString().takeLast(8)
+        val random = (1000..9999).random()
+        return "TR38${timestamp}${random}"
+    }
+
+    fun generateUniqueAccountNumber(): String {
+        // timestamp son 8 hane + random 8 hane
+        val timestamp = System.currentTimeMillis().toString().takeLast(8)
+        val random = (10000000..99999999).random()
+        return "${timestamp}${random}"
     }
 } 

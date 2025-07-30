@@ -7,5 +7,5 @@ interface AccountInfoRepository {
     fun addAccount(accountInfo: AccountInfo, onResult: (Boolean) -> Unit)
     fun getAccountById(accountId: String, onResult: (AccountInfo?) -> Unit)
     fun deleteAccount(accountId: String, onResult: (Boolean) -> Unit)
-    fun getAccountByUserId(userId: String, onResult: (List<AccountInfo>) -> Unit)
+    fun getAccountByUserId(userId: String, onResult: (Result<List<AccountInfo>>) -> Unit)
 }
