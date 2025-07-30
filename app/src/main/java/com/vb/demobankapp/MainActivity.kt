@@ -3,33 +3,32 @@ package com.vb.demobankapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.presentation.ui.account.AddAccountScreen
 import com.vb.demobankapp.presentation.ui.auth.login.LoginScreen
 import com.vb.demobankapp.presentation.ui.auth.otp.OtpScreen
 import com.vb.demobankapp.presentation.ui.auth.register.RegisterScreen
+import com.vb.demobankapp.presentation.ui.auth.splash.SplashScreen
 import com.vb.demobankapp.presentation.ui.home.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
-// MainActivity.kt
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var currentScreen by remember { mutableStateOf("login") } // Başlangıç login
+            var currentScreen by remember { mutableStateOf("splash") }
             var phoneNumber by remember { mutableStateOf("") }
-
-            // Anlık kullanıcı ID'si
             val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
             when (currentScreen) {
+                "splash" -> SplashScreen(
+                    onNavigateToHome = { currentScreen = "home" },
+                    onNavigateToLogin = { currentScreen = "login" }
+                )
                 "login" -> LoginScreen(
-                    onBackClick = { /* Geri git */ },
+                    onBackClick = {},
                     onContinueClick = { phone ->
                         phoneNumber = phone
                         currentScreen = "otp"
@@ -50,11 +49,12 @@ class MainActivity : ComponentActivity() {
                     userId = currentUserId,
                     onAddAccountClick = { currentScreen = "addAccount" },
                     onTransferClick = { /* Transfer ekranına git */ },
-                    onCurrencyClick = { /* Currency ekranına git */ }
+                    onCurrencyClick = { /* Currency ekranına git */ },
+
                 )
                 "addAccount" -> AddAccountScreen(
                     onBackClick = { currentScreen = "home" },
-                    onAddClick = { /* ViewModel kendi işini yapıyor */ }
+                    onAddClick = {}
                 )
             }
         }

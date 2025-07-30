@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.R
 import com.vb.demobankapp.presentation.common.ui.theme.BackgroundCream
 import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
@@ -37,7 +38,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    onSplashComplete: () -> Unit
+    onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "rotation")
     val rotation by infiniteTransition.animateFloat(
@@ -51,8 +53,15 @@ fun SplashScreen(
     )
 
     LaunchedEffect(key1 = true) {
-        delay(3000)
-        onSplashComplete()
+        delay(2000)
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        if (currentUser != null) {
+            onNavigateToHome()
+        } else {
+            onNavigateToLogin()
+        }
     }
 
     Column(
@@ -91,12 +100,4 @@ fun SplashScreen(
             textAlign = TextAlign.Center
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SplashScreenPreview() {
-    SplashScreen(
-        onSplashComplete = {}
-    )
 }
