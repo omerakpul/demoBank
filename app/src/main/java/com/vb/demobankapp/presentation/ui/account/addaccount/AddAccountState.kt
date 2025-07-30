@@ -1,4 +1,4 @@
-package com.vb.demobankapp.presentation.ui.account
+package com.vb.demobankapp.presentation.ui.account.addaccount
 
 sealed class AddAccountState {
     data object Idle : AddAccountState()

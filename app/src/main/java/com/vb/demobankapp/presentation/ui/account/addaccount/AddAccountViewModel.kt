@@ -1,4 +1,4 @@
-package com.vb.demobankapp.presentation.ui.account
+package com.vb.demobankapp.presentation.ui.account.addaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
