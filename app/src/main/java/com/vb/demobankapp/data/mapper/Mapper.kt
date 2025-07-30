@@ -29,6 +29,7 @@ fun User.toDto(): UserDto = UserDto(
 
 fun AccountInfoDto.toDomain(): AccountInfo = AccountInfo(
     accountId = accountId ?: "",
+    accountName = accountName ?: "",
     userId = userId ?: "",
     iban = iban ?: "",
     accountNumber = accountNumber ?: "",
@@ -38,6 +39,7 @@ fun AccountInfoDto.toDomain(): AccountInfo = AccountInfo(
 
 fun AccountInfo.toDto(): AccountInfoDto = AccountInfoDto(
     accountId = accountId,
+    accountName = accountName,
     userId = userId,
     iban = iban,
     accountNumber = accountNumber,
