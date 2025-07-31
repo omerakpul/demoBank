@@ -1,10 +1,16 @@
 package com.vb.demobankapp.presentation.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
+import com.vb.demobankapp.domain.model.AccountInfo
+import com.vb.demobankapp.presentation.ui.account.accounts.AccountScreen
+import com.vb.demobankapp.presentation.ui.account.accounts.AccountState
+import com.vb.demobankapp.presentation.ui.account.accounts.AccountViewModel
 import com.vb.demobankapp.presentation.ui.account.addaccount.AddAccountScreen
 import com.vb.demobankapp.presentation.ui.auth.login.LoginScreen
 import com.vb.demobankapp.presentation.ui.auth.otp.OtpScreen
@@ -17,18 +23,17 @@ fun NavGraph(
     navController: NavHostController,
     startDestination: String = Screen.Splash.route
 ) {
+    // Seçili account'ı burada tutuyoruz
+    val selectedAccount = remember { mutableStateOf<AccountInfo?>(null) }
+
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route)
-                },
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route)
-                }
+                onNavigateToHome = { navController.navigate(Screen.Home.route) },
+                onNavigateToLogin = { navController.navigate(Screen.Login.route) }
             )
         }
 
@@ -48,12 +53,8 @@ fun NavGraph(
             OtpScreen(
                 phoneNumber = phoneNumber,
                 onBackClick = { navController.popBackStack() },
-                onVerifySuccess = {
-                    navController.navigate(Screen.Home.route)
-                },
-                onUserNotFound = { phoneNumber ->
-                    navController.navigate(Screen.Register.createRoute(phoneNumber))
-                }
+                onVerifySuccess = { navController.navigate(Screen.Home.route) },
+                onUserNotFound = { navController.navigate(Screen.Register.createRoute(phoneNumber)) }
             )
         }
 
@@ -65,24 +66,18 @@ fun NavGraph(
             RegisterScreen(
                 phoneNumber = phoneNumber,
                 onBackClick = { navController.popBackStack() },
-                onRegisterSuccess = {
-                    navController.navigate(Screen.Home.route)
-                }
+                onRegisterSuccess = { navController.navigate(Screen.Home.route) }
             )
         }
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onAddAccountClick = {
-                    navController.navigate(Screen.AddAccount.route)
-                },
+                onAddAccountClick = { navController.navigate(Screen.AddAccount.route) },
                 onTransferClick = { /* Transfer ekranına git */ },
                 onCurrencyClick = { /* Currency ekranına git */ },
-                onLogoutClick = {
-                    FirebaseAuth.getInstance().signOut()
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                onAccountClick = { account ->
+                    selectedAccount.value = account
+                    navController.navigate(Screen.Account.route)
                 }
             )
         }
@@ -92,6 +87,34 @@ fun NavGraph(
                 onBackClick = { navController.popBackStack() },
                 onAddClick = { /* ViewModel kendi işini yapıyor */ }
             )
+        }
+
+        composable(Screen.Account.route) {
+            val account = selectedAccount.value
+            if (account != null) {
+                val viewModel: AccountViewModel = hiltViewModel()
+                val state by viewModel.state.collectAsState()
+
+                AccountScreen(
+                    account = account,
+                    onBackClick = { navController.popBackStack() },
+                    onUpdateAccountName = { newName ->
+                        viewModel.updateAccountName(account.accountId, newName)
+                    },
+                    onDeleteAccount = {
+                        viewModel.deleteAccount(account.accountId)
+                    }
+                )
+
+
+                if (state is AccountState.Success) {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
+                    }
+                }
+            } else {
+                Text("Hesap bulunamadı.")
+            }
         }
     }
 }

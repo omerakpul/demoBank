@@ -1,6 +1,8 @@
 package com.vb.demobankapp.presentation.ui.home
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,20 +28,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.R
+import com.vb.demobankapp.domain.model.AccountInfo
 import com.vb.demobankapp.presentation.common.components.AccountCard
-import com.vb.demobankapp.presentation.common.components.AddAccountCard
+import com.vb.demobankapp.presentation.common.ui.theme.TextDark
+import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
 
 @Composable
 fun HomeScreen(
     onAddAccountClick: () -> Unit,
     onTransferClick: () -> Unit,
     onCurrencyClick: () -> Unit,
-    onLogoutClick: () -> Unit, // onLogoutClick parametresini ekledik
+    onAccountClick: (AccountInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -55,23 +67,29 @@ fun HomeScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // Üst kısım - Başlık ve çıkış butonu
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        // Üst kısım - "Hesaplarım" başlığı ve + butonu
+        Box(
+            modifier = Modifier.fillMaxWidth()
         ) {
+            // "Hesaplarım" yazısı tam ortada
             Text(
-                text = stringResource(R.string.welcome_back),
-                style = MaterialTheme.typography.headlineSmall
+                text = "Hesaplarım",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = TextDark,
+                fontSize = 20.sp,
+                modifier = Modifier.align(Alignment.Center) // Tam ortaya hizala
             )
 
-            // Çıkış butonu
-            IconButton(onClick = onLogoutClick) {
+            // + butonu sağ üstte
+            IconButton(
+                onClick = onAddAccountClick,
+                modifier = Modifier.align(Alignment.CenterEnd) // Sağa hizala
+            ) {
                 Icon(
-                    imageVector = Icons.Default.ExitToApp,
-                    contentDescription = "Çıkış Yap",
-                    tint = MaterialTheme.colorScheme.primary
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Hesap Ekle",
+                    tint = PrimaryYellow
                 )
             }
         }
@@ -83,45 +101,54 @@ fun HomeScreen(
                 Text(stringResource(R.string.loading))
             }
             is HomeState.Empty -> {
-                AddAccountCard(
-                    onClick = onAddAccountClick,
-                    isFirstCard = true
-                )
+                Text("Hesabınız bulunmamaktadır.")
             }
             is HomeState.Success -> {
                 currentState.accounts.forEach { account ->
                     AccountCard(
                         accountName = account.accountName,
                         accountNumber = account.iban,
-                        balance = "${account.balance} ${account.accountType}"
+                        balance = "${account.balance} ${account.accountType}",
+                        onClick = { onAccountClick(account) }
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AddAccountCard(
-                    onClick = onAddAccountClick,
-                    isFirstCard = false
-                )
-
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Transfer ve Currency butonları yerine icon'lar
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.SpaceEvenly, // Icon'ları eşit aralıklarla dağıt
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(
+                    // Transfer Icon
+                    IconButton(
                         onClick = onTransferClick,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .size(56.dp)
+                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp)) // Dış çizgi ekle
                     ) {
-                        Text(stringResource(R.string.transfer))
+                        Icon(
+                            painter = painterResource(id = R.drawable.transfer),
+                            contentDescription = "Para Transferi",
+                            tint = PrimaryYellow,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
 
-                    Button(
+                    // Currency Icon
+                    IconButton(
                         onClick = onCurrencyClick,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .size(56.dp)
+                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp)) // Dış çizgi ekle
                     ) {
-                        Text(stringResource(R.string.currency))
+                        Icon(
+                            painter = painterResource(id = R.drawable.currency),
+                            contentDescription = "Döviz İşlemleri",
+                            tint = PrimaryYellow,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
                 }
             }
