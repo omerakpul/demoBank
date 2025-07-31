@@ -3,7 +3,7 @@ package com.vb.demobankapp.presentation.ui.account.addaccount
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.vb.demobankapp.domain.usecase.AddAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.AddAccountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

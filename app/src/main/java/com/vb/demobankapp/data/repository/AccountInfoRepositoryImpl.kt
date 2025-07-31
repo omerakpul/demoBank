@@ -25,6 +25,10 @@ class AccountInfoRepositoryImpl @Inject constructor(
         ds.deleteAccount(accountId, onResult)
     }
 
+    override fun updateAccount(account: AccountInfo, onResult: (Boolean) -> Unit) {
+        ds.updateAccount(account.toDto(), onResult)
+    }
+
     override fun getAccountByUserId(userId: String, onResult: (Result<List<AccountInfo>>) -> Unit) {
         ds.getAccountsByUserId(userId) { dtoList ->
             try {

@@ -38,6 +38,14 @@ class AccountInfoRemoteDataSource @Inject constructor(
             .addOnFailureListener { onResult(false) }
     }
 
+    fun updateAccount(accountInfoDto: AccountInfoDto, onResult: (Boolean) -> Unit) {
+        db.collection("accounts")
+            .document(accountInfoDto.accountId ?: "")
+            .set(accountInfoDto)
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener { onResult(false) }
+    }
+
     fun getAccountsByUserId(userId: String, onResult: (List<AccountInfoDto>) -> Unit) {
         db.collection("accounts")
             .whereEqualTo("userId", userId)

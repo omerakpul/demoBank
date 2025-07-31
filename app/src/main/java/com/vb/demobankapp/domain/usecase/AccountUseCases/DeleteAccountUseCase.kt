@@ -1,4 +1,4 @@
-package com.vb.demobankapp.domain.usecase
+package com.vb.demobankapp.domain.usecase.AccountUseCases
 
 import com.vb.demobankapp.domain.repository.AccountInfoRepository
 import javax.inject.Inject

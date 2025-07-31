@@ -4,13 +4,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.repository.AccountInfoRepository
 import com.vb.demobankapp.domain.repository.CurrencyRepository
 import com.vb.demobankapp.domain.repository.UserRepository
-import com.vb.demobankapp.domain.usecase.AddAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.AddAccountUseCase
 import com.vb.demobankapp.domain.usecase.AddUserUseCase
 import com.vb.demobankapp.domain.usecase.ConvertCurrencyUseCase
-import com.vb.demobankapp.domain.usecase.DeleteAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.DeleteAccountUseCase
 import com.vb.demobankapp.domain.usecase.DeleteUserUseCase
-import com.vb.demobankapp.domain.usecase.GetAccountByIdUseCase
-import com.vb.demobankapp.domain.usecase.GetAccountsByUserIdUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.UpdateAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.GetAccountsByUserIdUseCase
 import com.vb.demobankapp.domain.usecase.GetAllUsersUseCase
 import com.vb.demobankapp.domain.usecase.GetExchangeRatesUseCase
 import com.vb.demobankapp.domain.usecase.GetUserByIdUseCase
@@ -85,10 +85,10 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetAccountByIdUseCase(
+    fun provideUpdateAccountUseCase(
         repository: AccountInfoRepository
-    ): GetAccountByIdUseCase {
-        return GetAccountByIdUseCase(repository)
+    ): UpdateAccountUseCase {
+        return UpdateAccountUseCase(repository)
     }
 
     @Provides
