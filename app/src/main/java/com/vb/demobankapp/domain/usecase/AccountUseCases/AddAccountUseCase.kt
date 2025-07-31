@@ -27,9 +27,9 @@ class AddAccountUseCase @Inject constructor(
     }
 
     fun generateUniqueIban(): String {
-        // TR + timestamp son 8 hanesi + random 4 hane
+        // TR + timestamp son 8 hanesi + random 14 hane
         val timestamp = System.currentTimeMillis().toString().takeLast(8)
-        val random = (1000..9999).random()
+        val random = (10000000000000..99999999999999).random()
         return "TR38${timestamp}${random}"
     }
 

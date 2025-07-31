@@ -23,4 +23,5 @@ sealed class Screen(val route: String) {
     data object Home : Screen("home_screen")
     data object AddAccount : Screen("add_account_screen")
     data object Account : Screen("account_screen")
+    data object Transfer : Screen("transfer_screen")
 }

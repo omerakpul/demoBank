@@ -1,12 +1,16 @@
 package com.vb.demobankapp.presentation.navigation
 
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.model.AccountInfo
 import com.vb.demobankapp.presentation.ui.account.accounts.AccountScreen
 import com.vb.demobankapp.presentation.ui.account.accounts.AccountState
@@ -17,6 +21,7 @@ import com.vb.demobankapp.presentation.ui.auth.otp.OtpScreen
 import com.vb.demobankapp.presentation.ui.auth.register.RegisterScreen
 import com.vb.demobankapp.presentation.ui.auth.splash.SplashScreen
 import com.vb.demobankapp.presentation.ui.home.HomeScreen
+import com.vb.demobankapp.presentation.ui.transfers.TransferScreen
 
 @Composable
 fun NavGraph(
@@ -73,7 +78,7 @@ fun NavGraph(
         composable(Screen.Home.route) {
             HomeScreen(
                 onAddAccountClick = { navController.navigate(Screen.AddAccount.route) },
-                onTransferClick = { /* Transfer ekranına git */ },
+                onTransferClick = { navController.navigate(Screen.Transfer.route) },
                 onCurrencyClick = { /* Currency ekranına git */ },
                 onAccountClick = { account ->
                     selectedAccount.value = account
@@ -116,5 +121,14 @@ fun NavGraph(
                 Text("Hesap bulunamadı.")
             }
         }
+
+        composable(Screen.Transfer.route) {
+            TransferScreen(
+                onBackClick = { navController.popBackStack() },
+                onAccountSelectClick = { /* Hesap seçim ekranına git */ },
+                onTransferClick = { /* Transfer işlemi */ }
+            )
+        }
+
     }
 }
