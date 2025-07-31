@@ -125,7 +125,11 @@ fun NavGraph(
         composable(Screen.Transfer.route) {
             TransferScreen(
                 onBackClick = { navController.popBackStack() },
-                onTransferClick = { /* Transfer işlemi */ }
+                onTransferClick = {
+                    navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                }
             )
         }
 
