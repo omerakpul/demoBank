@@ -1,6 +1,7 @@
 package com.vb.demobankapp.presentation.common.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -20,13 +21,15 @@ fun AccountCard(
     accountName: String,
     accountNumber: String,
     balance: String,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp)
     ) {
         Box(
@@ -82,9 +85,9 @@ fun AccountCard(
 @Composable
 @Preview
 fun AccountCardPreview(){
-        AccountCard(
-            accountName = "Preview",
-            accountNumber = "1234 5678 9012 3456",
-            balance = "100.00 TL"
-        )
+    AccountCard(
+        accountName = "Preview",
+        accountNumber = "1234 5678 9012 3456",
+        balance = "100.00 TL"
+    )
 }

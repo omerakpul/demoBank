@@ -25,15 +25,13 @@ fun AddAccountScreen(
     var accountName by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
 
-    // Success durumunda geri dön ve state'i sıfırla
     LaunchedEffect(state) {
         if (state is AddAccountState.Success) {
-            viewModel.resetState() // State'i sıfırla
+            viewModel.resetState()
             onBackClick()
         }
     }
 
-    // Screen'e her girişte state'i sıfırla
     LaunchedEffect(Unit) {
         viewModel.resetState()
     }

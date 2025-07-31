@@ -1,6 +1,5 @@
-package com.vb.demobankapp.domain.usecase
+package com.vb.demobankapp.domain.usecase.AccountUseCases
 
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.model.AccountInfo
 import com.vb.demobankapp.domain.repository.AccountInfoRepository
