@@ -39,4 +39,10 @@ class AccountInfoRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getAccountByIban(iban: String, onResult: (AccountInfo?) -> Unit) {
+        ds.getAccountByIban(iban) { dto ->
+            onResult(dto?.toDomain())
+        }
+    }
 }

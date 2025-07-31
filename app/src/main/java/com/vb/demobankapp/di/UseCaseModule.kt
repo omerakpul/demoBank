@@ -5,12 +5,13 @@ import com.vb.demobankapp.domain.repository.AccountInfoRepository
 import com.vb.demobankapp.domain.repository.CurrencyRepository
 import com.vb.demobankapp.domain.repository.UserRepository
 import com.vb.demobankapp.domain.usecase.AccountUseCases.AddAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.DeleteAccountUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.GetAccountsByUserIdUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.TransferMoneyUseCase
+import com.vb.demobankapp.domain.usecase.AccountUseCases.UpdateAccountUseCase
 import com.vb.demobankapp.domain.usecase.AddUserUseCase
 import com.vb.demobankapp.domain.usecase.ConvertCurrencyUseCase
-import com.vb.demobankapp.domain.usecase.AccountUseCases.DeleteAccountUseCase
 import com.vb.demobankapp.domain.usecase.DeleteUserUseCase
-import com.vb.demobankapp.domain.usecase.AccountUseCases.UpdateAccountUseCase
-import com.vb.demobankapp.domain.usecase.AccountUseCases.GetAccountsByUserIdUseCase
 import com.vb.demobankapp.domain.usecase.GetAllUsersUseCase
 import com.vb.demobankapp.domain.usecase.GetExchangeRatesUseCase
 import com.vb.demobankapp.domain.usecase.GetUserByIdUseCase
@@ -80,7 +81,7 @@ object UseCaseModule {
         repository: AccountInfoRepository,
         auth: FirebaseAuth
     ): AddAccountUseCase {
-        return AddAccountUseCase(repository,auth)
+        return AddAccountUseCase(repository, auth)
     }
 
     @Provides
@@ -121,5 +122,13 @@ object UseCaseModule {
         repository: CurrencyRepository
     ): ConvertCurrencyUseCase {
         return ConvertCurrencyUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransferMoneyUseCase(
+        repository: AccountInfoRepository
+    ): TransferMoneyUseCase {
+        return TransferMoneyUseCase(repository)
     }
 }

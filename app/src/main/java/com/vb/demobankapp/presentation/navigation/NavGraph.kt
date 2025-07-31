@@ -125,7 +125,6 @@ fun NavGraph(
         composable(Screen.Transfer.route) {
             TransferScreen(
                 onBackClick = { navController.popBackStack() },
-                onAccountSelectClick = { /* Hesap seçim ekranına git */ },
                 onTransferClick = { /* Transfer işlemi */ }
             )
         }

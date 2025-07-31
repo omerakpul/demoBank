@@ -2,7 +2,6 @@ package com.vb.demobankapp.data.remote.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vb.demobankapp.data.remote.dto.AccountInfoDto
-import com.vb.demobankapp.data.remote.dto.UserDto
 import javax.inject.Inject
 
 class AccountInfoRemoteDataSource @Inject constructor(
@@ -60,6 +59,24 @@ class AccountInfoRemoteDataSource @Inject constructor(
             }
             .addOnFailureListener { exception ->
                 onResult(emptyList())
+            }
+    }
+
+    fun getAccountByIban(iban: String, onResult: (AccountInfoDto?) -> Unit) {
+        db.collection("accounts")
+            .whereEqualTo("iban", iban)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                try {
+                    val account = snapshot.documents.firstOrNull()?.toObject(AccountInfoDto::class.java)
+                    onResult(account)
+                } catch (e: Exception) {
+                    onResult(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                onResult(null)
             }
     }
 }
