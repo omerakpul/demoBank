@@ -2,9 +2,11 @@ package com.vb.demobankapp.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.usecase.AddAccountUseCase
 import com.vb.demobankapp.domain.usecase.DeleteAccountUseCase
 import com.vb.demobankapp.domain.usecase.GetAccountsByUserIdUseCase
+import com.vb.demobankapp.presentation.ui.account.addaccount.AddAccountState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +26,7 @@ class HomeViewModel @Inject constructor(
     fun loadAccounts(userId: String) {
         viewModelScope.launch {
             _state.value = HomeState.Loading
+            val userId = FirebaseAuth.getInstance().currentUser?.phoneNumber ?: ""
             getAccountsByUserIdUseCase(userId) { result ->
                 result.onSuccess { accounts ->
                     if (accounts.isEmpty()) {
@@ -36,15 +39,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addAccount(userId: String) {
-        viewModelScope.launch {
-            addAccountUseCase(userId) { success ->
-                if (success) {
-                    loadAccounts(userId)
-                }
-            }
-        }
-    }
 
     fun deleteAccount(accountId: String, userId: String) {
         viewModelScope.launch {

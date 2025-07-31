@@ -10,11 +10,7 @@ class AddAccountUseCase @Inject constructor(
     private val accountRepository: AccountInfoRepository,
     private val auth: FirebaseAuth
 ) {
-    suspend operator fun invoke(accountName: String, onResult: (Boolean) -> Unit) {
-
-        val userId = auth.currentUser?.uid
-        if(userId.isNullOrBlank())
-            return onResult(false)
+    suspend operator fun invoke(userId: String, accountName: String, onResult: (Boolean) -> Unit) {
 
         val iban = generateUniqueIban()
         val accountNumber = generateUniqueAccountNumber()

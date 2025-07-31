@@ -2,6 +2,7 @@ package com.vb.demobankapp.presentation.ui.account.addaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.domain.usecase.AddAccountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +18,11 @@ class AddAccountViewModel @Inject constructor(
     private val _state = MutableStateFlow<AddAccountState>(AddAccountState.Idle)
     val state: StateFlow<AddAccountState> = _state
 
-    fun addAccount(accountName : String) {
+    fun addAccount(accountName: String) {
         viewModelScope.launch {
             _state.value = AddAccountState.Loading
-            addAccountUseCase(accountName) { success ->
+            val userId = FirebaseAuth.getInstance().currentUser?.phoneNumber ?: ""
+            addAccountUseCase(userId, accountName) { success ->
                 if (success)
                     _state.value = AddAccountState.Success
                 else

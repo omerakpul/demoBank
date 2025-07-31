@@ -35,14 +35,18 @@ fun NavGraph(
         composable(Screen.Login.route) {
             LoginScreen(
                 onContinueClick = { phoneNumber ->
-                    navController.navigate(Screen.Otp.route)
+                    navController.navigate(Screen.Otp.createRoute(phoneNumber))
                 }
             )
         }
 
-        composable(Screen.Otp.route) {
+        composable(
+            route = Screen.Otp.route,
+            arguments = Screen.Otp.arguments
+        ) { backStackEntry ->
+            val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
             OtpScreen(
-                phoneNumber = "", // Şimdilik boş
+                phoneNumber = phoneNumber,
                 onBackClick = { navController.popBackStack() },
                 onVerifySuccess = {
                     navController.navigate(Screen.Home.route)
