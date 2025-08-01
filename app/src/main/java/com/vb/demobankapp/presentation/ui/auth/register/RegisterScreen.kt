@@ -212,7 +212,7 @@ fun RegisterScreen(
             ) {
                 OutlinedTextField(
                     value = birthDate,
-                    onValueChange = { }, // Değişikliği engelle
+                    onValueChange = { },
                     placeholder = {
                         Text(
                             text = "Doğum tarihi seçin",
@@ -227,7 +227,7 @@ fun RegisterScreen(
                         focusedBorderColor = Color.Transparent
                     ),
                     singleLine = true,
-                    readOnly = true // Sadece okuma
+                    readOnly = true
                 )
                 Icon(
                     imageVector = Icons.Default.DateRange,

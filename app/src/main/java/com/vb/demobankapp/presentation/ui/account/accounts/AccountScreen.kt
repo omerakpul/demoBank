@@ -7,16 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import android.content.Context
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -24,28 +19,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vb.demobankapp.R
 import com.vb.demobankapp.domain.model.AccountInfo
-import com.vb.demobankapp.presentation.common.components.AccountDetailRow
 import com.vb.demobankapp.presentation.common.ui.theme.*
 
 @Composable
 fun AccountScreen(
     account: AccountInfo,
     onBackClick: () -> Unit,
-    onUpdateAccountName: (String) -> Unit,
-    onDeleteAccount: () -> Unit
+    viewModel: AccountViewModel = hiltViewModel()
 ) {
-    var showEdit by remember { mutableStateOf(false) }
-    var newAccountName by remember { mutableStateOf(account.accountName) }
+    val state by viewModel.state.collectAsState()
+    var showEditDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var currentAccountName by remember { mutableStateOf(account.accountName) }
+    var newAccountName by remember { mutableStateOf(account.accountName) }
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    LaunchedEffect(account.accountName) {
-        currentAccountName = account.accountName
-        newAccountName = account.accountName
+    // Başarılı işlem sonrası geri dön
+    LaunchedEffect(state) {
+        if (state is AccountState.Success) {
+            onBackClick()
+        }
     }
 
     Column(
@@ -54,146 +50,73 @@ fun AccountScreen(
             .background(BackgroundCream)
             .padding(16.dp)
     ) {
-        // Header - Geri butonu ve başlık
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = TextDark
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "Hesap Detayları",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextDark
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Hesap Türü Bölümü
         Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.creditcard),
-                    contentDescription = "Account Type",
-                    tint = TextDark,
-                    modifier = Modifier.size(24.dp)
-                )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(
-                    text = currentAccountName,
-                    fontWeight = FontWeight.Bold,
-                    color = TextDark,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = account.accountType,
-                    color = TextPlaceholder,
-                    fontSize = 14.sp
-                )
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.Default.ArrowBack, "Geri", tint = TextDark)
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Text("Hesap Detayları", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextDark)
+            Spacer(modifier = Modifier.weight(1f))
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Hesap Bilgileri Bölümü - Sadece yazılar
-        Column {
-            // Hesap Numarası
-            AccountDetailRow(
-                label = "Hesap Numarası",
-                value = account.accountNumber
-            )
 
-            Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Hesap Adı", color = TextPlaceholder, fontSize = 14.sp)
+                Text(account.accountName, color = TextDark, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
-            // IBAN with Copy Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "IBAN",
-                        color = TextPlaceholder,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = account.iban,
-                        color = TextDark,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        val clip = ClipData.newPlainText("IBAN", account.iban)
-                        val clipEntry = ClipEntry(clip)
-                        clipboardManager.setClip(clipEntry)
-                        Toast.makeText(context, "IBAN kopyalandı", Toast.LENGTH_SHORT).show()
-                    }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.contentcopy),
-                        contentDescription = "Copy IBAN",
-                        tint = TextDark,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("IBAN", color = TextPlaceholder, fontSize = 14.sp)
+                        Text(account.iban, color = TextDark, fontSize = 16.sp)
+                    }
+                    IconButton(
+                        onClick = {
+                            val clip = ClipData.newPlainText("IBAN", account.iban)
+                            val clipEntry = ClipEntry(clip)
+                            clipboardManager.setClip(clipEntry)
+                            Toast.makeText(context, "IBAN kopyalandı", Toast.LENGTH_SHORT).show()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.contentcopy),
+                            contentDescription = "Copy IBAN",
+                            tint = TextDark,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("Bakiye", color = TextPlaceholder, fontSize = 14.sp)
+                Text("₺ ${account.balance}", color = TextDark, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-
-            Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
-
-            // Bakiye
-            AccountDetailRow(
-                label = "Bakiye",
-                value = "₺ ${account.balance}"
-            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Hesap Adı Değiştir ve input
-        if (showEdit) {
-            OutlinedTextField(
-                value = newAccountName,
-                onValueChange = { newAccountName = it },
-                label = { Text("Yeni Hesap Adı") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Button(
-                onClick = {
-                    onUpdateAccountName(newAccountName)
-                    currentAccountName = newAccountName
-                    showEdit = false
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryYellow)
-            ) {
-                Text("Kaydet", color = TextDark, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-        } else {
-            Button(
-                onClick = { showEdit = true },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryYellow)
-            ) {
-                Text("Hesap Adı Değiştir", color = TextDark, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
+        Button(
+            onClick = { showEditDialog = true },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = PrimaryYellow)
+        ) {
+            Text("Hesap Adı Değiştir", color = TextDark, fontWeight = FontWeight.Bold)
         }
 
-        // Hesabı Sil
+        Spacer(modifier = Modifier.height(12.dp))
+
         Button(
             onClick = { showDeleteDialog = true },
             modifier = Modifier.fillMaxWidth(),
@@ -203,25 +126,73 @@ fun AccountScreen(
         }
     }
 
-    // Silme onayı popup
+    // Hesap adı değiştirme popup
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Hesap Adı Değiştir") },
+            text = {
+                OutlinedTextField(
+                    value = newAccountName,
+                    onValueChange = { newAccountName = it },
+                    label = { Text("Yeni Hesap Adı") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.updateAccountName(account.accountId, newAccountName)
+                        showEditDialog = false
+                    }
+                ) {
+                    Text("Kaydet", color = PrimaryYellow)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
+                    Text("İptal")
+                }
+            }
+        )
+    }
+
+    // Hesap silme uyarısı
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Hesabı Sil") },
-            text = { Text("Bu hesabı silmek istediğine emin misin?") },
+            text = { Text("Bu hesabı silmek istediğine emin misin? Bu işlem geri alınamaz.") },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onDeleteAccount()
+                        viewModel.deleteAccount(account.accountId)  // Onay verilince sil
                         showDeleteDialog = false
                     }
-                ) { Text("Evet", color = Color.Red) }
+                ) {
+                    Text("Evet, Sil", color = Color.Red)
+                }
             },
             dismissButton = {
-                TextButton(
-                    onClick = { showDeleteDialog = false }
-                ) { Text("Vazgeç") }
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Vazgeç")
+                }
             }
         )
+    }
+
+    // Loading ve Error durumları
+    when (state) {
+        is AccountState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = PrimaryYellow)
+            }
+        }
+        is AccountState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text((state as AccountState.Error).message, color = Color.Red)
+            }
+        }
+        else -> {}
     }
 }

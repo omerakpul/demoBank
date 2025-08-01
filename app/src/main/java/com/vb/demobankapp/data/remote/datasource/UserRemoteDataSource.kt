@@ -63,8 +63,11 @@ class UserRemoteDataSource @Inject constructor(
                     onResult(Result.failure(e))
                 }
 
-                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                    this@UserRemoteDataSource.verificationId = verificationId
+                override fun onCodeSent(
+                    _verificationId: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
+                    verificationId = _verificationId
                     onResult(Result.success("OTP_SENT"))
                 }
 

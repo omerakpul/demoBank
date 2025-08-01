@@ -20,10 +20,9 @@ import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
 fun AddAccountCard(
     onClick: () -> Unit,
     isFirstCard: Boolean,
-    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
             .padding(vertical = 4.dp)
@@ -44,7 +43,7 @@ fun AddAccountCard(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (isFirstCard) "+ Kart ekle" else "+ Yeni kart ekle",
+                text = if (isFirstCard) "+ Hesap ekle" else "+ Yeni hesap ekle",
                 color = androidx.compose.ui.graphics.Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold

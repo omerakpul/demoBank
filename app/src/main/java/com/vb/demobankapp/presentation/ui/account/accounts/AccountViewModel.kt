@@ -2,7 +2,6 @@ package com.vb.demobankapp.presentation.ui.account.accounts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vb.demobankapp.domain.usecase.AccountUseCases.AddAccountUseCase
 import com.vb.demobankapp.domain.usecase.AccountUseCases.DeleteAccountUseCase
 import com.vb.demobankapp.domain.usecase.AccountUseCases.UpdateAccountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,10 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val deleteAccountUseCase: DeleteAccountUseCase,
-    private val updateAccountUseCase: UpdateAccountUseCase
+    private val updateAccountUseCase: UpdateAccountUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase
 ) : ViewModel() {
-
     private val _state = MutableStateFlow<AccountState>(AccountState.Idle)
     val state: StateFlow<AccountState> = _state
 
@@ -24,11 +22,7 @@ class AccountViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = AccountState.Loading
             updateAccountUseCase(accountId, newName) { success ->
-                if (success) {
-                    _state.value = AccountState.Success
-                } else {
-                    _state.value = AccountState.Error("Hesap adı güncellenemedi")
-                }
+                _state.value = if (success) AccountState.Success else AccountState.Error("Güncelleme başarısız")
             }
         }
     }
@@ -37,10 +31,7 @@ class AccountViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = AccountState.Loading
             deleteAccountUseCase(accountId) { success ->
-                if (success)
-                    _state.value = AccountState.Success
-                else
-                    _state.value = AccountState.Error("Hesap silinemedi")
+                _state.value = if (success) AccountState.Success else AccountState.Error("Silme başarısız")
             }
         }
     }
