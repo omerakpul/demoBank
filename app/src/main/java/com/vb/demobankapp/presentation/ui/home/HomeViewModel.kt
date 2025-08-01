@@ -3,8 +3,6 @@ package com.vb.demobankapp.presentation.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.vb.demobankapp.domain.usecase.AccountUseCases.AddAccountUseCase
-import com.vb.demobankapp.domain.usecase.AccountUseCases.DeleteAccountUseCase
 import com.vb.demobankapp.domain.usecase.AccountUseCases.GetAccountsByUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getAccountsByUserIdUseCase: GetAccountsByUserIdUseCase,
-    private val addAccountUseCase: AddAccountUseCase,
-    private val deleteAccountUseCase: DeleteAccountUseCase
+    private val getAccountsByUserIdUseCase: GetAccountsByUserIdUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
@@ -39,7 +35,7 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun deleteAccount(accountId: String, userId: String) {
+    /* fun deleteAccount(accountId: String, userId: String) {
         viewModelScope.launch {
             deleteAccountUseCase(accountId) { success ->
                 if (success) {
@@ -47,6 +43,6 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-    }
+    } */
 
 }

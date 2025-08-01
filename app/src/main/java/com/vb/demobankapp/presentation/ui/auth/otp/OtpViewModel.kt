@@ -34,7 +34,8 @@ class OtpViewModel @Inject constructor(
         }
     }
 
-    fun resetState() {
+    fun resetState(){
         _state.value = OtpState.Idle
     }
+
 }
