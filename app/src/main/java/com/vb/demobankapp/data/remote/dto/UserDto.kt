@@ -6,5 +6,5 @@ data class UserDto(
     val phoneNumber: String? = null,
     val birthDate: String? = null,
     val profileImageUrl: String? = null,
-    val createdAt: Long? = null
+    val createdAt: String? = null
 )

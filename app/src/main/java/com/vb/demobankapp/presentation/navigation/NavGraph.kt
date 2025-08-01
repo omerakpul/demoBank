@@ -20,7 +20,7 @@ import com.vb.demobankapp.presentation.ui.transfers.TransferScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: String = Screen.Splash.route
+    startDestination: String = "splash_screen"
 ) {
     // Seçili account'ı burada tutuyaoruz
     val selectedAccount = remember { mutableStateOf<AccountInfo?>(null) }
@@ -29,14 +29,14 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(Screen.Splash.route) {
+        composable("splash_screen") {
             SplashScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
                 onNavigateToLogin = { navController.navigate(Screen.Login.route) }
             )
         }
 
-        composable(Screen.Login.route) {
+        composable("login_screen") {
             LoginScreen(
                 onContinueClick = { phoneNumber ->
                     navController.navigate(Screen.Otp.createRoute(phoneNumber))

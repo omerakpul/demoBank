@@ -15,7 +15,7 @@ fun UserDto.toDomain(): User = User(
     phoneNumber = phoneNumber ?: "",
     birthDate = birthDate ?: "",
     profileImageUrl = profileImageUrl ?: "",
-    createdAt = createdAt ?: 0L
+    createdAt = createdAt ?: ""
 )
 
 fun User.toDto(): UserDto = UserDto(

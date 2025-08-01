@@ -6,5 +6,5 @@ data class User(
     val phoneNumber: String,
     val birthDate: String,
     val profileImageUrl: String,
-    val createdAt: Long
+    val createdAt: String
 )
