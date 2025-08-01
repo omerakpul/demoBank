@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,11 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,8 +36,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.vb.demobankapp.R
 import com.vb.demobankapp.domain.model.AccountInfo
 import com.vb.demobankapp.presentation.common.components.AccountCard
-import com.vb.demobankapp.presentation.common.ui.theme.TextDark
 import com.vb.demobankapp.presentation.common.ui.theme.PrimaryYellow
+import com.vb.demobankapp.presentation.common.ui.theme.TextDark
 
 @Composable
 fun HomeScreen(
@@ -53,7 +49,7 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val auth = FirebaseAuth.getInstance()
-    val currentUserId = auth.currentUser?.uid ?: ""
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.phoneNumber ?: ""
 
     LaunchedEffect(currentUserId) {
         if (currentUserId.isNotEmpty()) {
@@ -67,24 +63,21 @@ fun HomeScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // Üst kısım - "Hesaplarım" başlığı ve + butonu
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // "Hesaplarım" yazısı tam ortada
             Text(
                 text = "Hesaplarım",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = TextDark,
                 fontSize = 20.sp,
-                modifier = Modifier.align(Alignment.Center) // Tam ortaya hizala
+                modifier = Modifier.align(Alignment.Center)
             )
 
-            // + butonu sağ üstte
             IconButton(
                 onClick = onAddAccountClick,
-                modifier = Modifier.align(Alignment.CenterEnd) // Sağa hizala
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -100,9 +93,11 @@ fun HomeScreen(
             is HomeState.Loading -> {
                 Text(stringResource(R.string.loading))
             }
+
             is HomeState.Empty -> {
                 Text("Hesabınız bulunmamaktadır.")
             }
+
             is HomeState.Success -> {
                 currentState.accounts.forEach { account ->
                     AccountCard(
@@ -115,10 +110,9 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Transfer ve Currency butonları yerine icon'lar
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly, // Icon'ları eşit aralıklarla dağıt
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Transfer Icon
@@ -126,7 +120,7 @@ fun HomeScreen(
                         onClick = onTransferClick,
                         modifier = Modifier
                             .size(56.dp)
-                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp)) // Dış çizgi ekle
+                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp))
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.transfer),
@@ -136,12 +130,11 @@ fun HomeScreen(
                         )
                     }
 
-                    // Currency Icon
                     IconButton(
                         onClick = onCurrencyClick,
                         modifier = Modifier
                             .size(56.dp)
-                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp)) // Dış çizgi ekle
+                            .border(2.dp, PrimaryYellow, RoundedCornerShape(12.dp))
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.currency),
@@ -152,6 +145,7 @@ fun HomeScreen(
                     }
                 }
             }
+
             is HomeState.Error -> {
                 Text(
                     text = currentState.message,

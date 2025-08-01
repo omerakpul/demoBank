@@ -21,7 +21,6 @@ class HomeViewModel @Inject constructor(
     fun loadAccounts(userId: String) {
         viewModelScope.launch {
             _state.value = HomeState.Loading
-            val userId = FirebaseAuth.getInstance().currentUser?.phoneNumber ?: ""
             getAccountsByUserIdUseCase(userId) { result ->
                 result.onSuccess { accounts ->
                     if (accounts.isEmpty()) {
@@ -33,16 +32,5 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-
-    /* fun deleteAccount(accountId: String, userId: String) {
-        viewModelScope.launch {
-            deleteAccountUseCase(accountId) { success ->
-                if (success) {
-                    loadAccounts(userId)
-                }
-            }
-        }
-    } */
 
 }

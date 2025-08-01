@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Demo Bank App</string>
+    <string name="app_name">Demo Bank Uygulaması</string>
 
     <!-- Auth -->
-    <string name="sign_in">Sign in</string>
-    <string name="sign_up">Sign up</string>
-    <string name="welcome">Welcome</string>
-    <string name="create_account">Create Account</string>
-    <string name="enter_code">Enter Code</string>
-    <string name="continue_button">Continue</string>
-    <string name="verify">Verify</string>
-    <string name="create_account_button">Create Account</string>
+    <string name="sign_in">Giriş Yap</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="welcome">Hoş Geldiniz</string>
+    <string name="create_account">Hesap Oluştur</string>
+    <string name="enter_code">Kodu Girin</string>
+    <string name="continue_button">Devam Et</string>
+    <string name="verify">Doğrula</string>
+    <string name="create_account_button">Hesap Oluştur</string>
 
     <!-- Input Fields -->
-    <string name="phone_number">Phone number</string>
-    <string name="name">Name</string>
-    <string name="surname">Surname</string>
-    <string name="birth_date">Birth date (DD/MM/YYYY)</string>
-    <string name="enter_otp">Enter 6-digit code</string>
+    <string name="phone_number">Telefon numarası</string>
+    <string name="name">Ad</string>
+    <string name="surname">Soyad</string>
+    <string name="birth_date">Doğum tarihi (GG/AA/YYYY)</string>
+    <string name="enter_otp">6 haneli kodu girin</string>
 
     <!-- Messages -->
-    <string name="otp_sent_message">We\'ve sent a code to %1$s</string>
-    <string name="resend_code">Didn\'t receive code? Resend</string>
+    <string name="otp_sent_message">%1$s numarasına kod gönderdik</string>
+    <string name="resend_code">Kod gelmedi mi? Tekrar gönder</string>
 
     <!-- Legal -->
-    <string name="terms_privacy">By continuing, you agree to our Terms of Service and Privacy Policy</string>
+    <string name="terms_privacy">Devam ederek Kullanım Şartları ve Gizlilik Politikamızı kabul etmiş olursunuz</string>
 
     <!-- Splash -->
-    <string name="splash_title">Next generation banking</string>
+    <string name="splash_title">Yeni nesil bankacılık</string>
     <string name="splash_subtitle">DEMOBANK</string>
 
     <!-- Home Screen -->
-    <string name="welcome_back">Welcome back</string>
-    <string name="main_account">Main Account</string>
+    <string name="welcome_back">Tekrar hoş geldin</string>
+    <string name="main_account">Ana Hesap</string>
     <string name="iban">IBAN</string>
-    <string name="copy">Copy</string>
+    <string name="copy">Kopyala</string>
     <string name="transfer">Transfer</string>
-    <string name="currency">Currency</string>
-    <string name="notifications">Notifications</string>
-    <string name="profile">Profile</string>
-    <string name="quick_actions">Quick Actions</string>
-    <string name="arrow_right">Arrow Right</string>
-    <string name="loading">Loading...</string>
-    <string name="account_name">%1$s Account</string>
+    <string name="currency">Döviz</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="profile">Profil</string>
+    <string name="quick_actions">Hızlı İşlemler</string>
+    <string name="arrow_right">Sağ Ok</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="account_name">%1$s Hesabı</string>
 </resources>

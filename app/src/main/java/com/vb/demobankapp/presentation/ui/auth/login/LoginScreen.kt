@@ -55,24 +55,18 @@ fun LoginScreen(
 
     val state by viewModel.state.collectAsState()
 
-    // Telefon numarası kontrolü
     fun validateAndFormatPhoneNumber(text: String): String {
-        // Sadece rakamları al
         val digitsOnly = text.filter { it.isDigit() }
 
-        // Başına 0 koymuşsa uyarı ver
         if (digitsOnly.startsWith("0")) {
             showError = true
             errorMessage = "Numaranızın başına 0 koymayın"
-            return phoneNumber // Eski değeri koru
-        }
-
-        // 10 haneyi geçerse hiçbir şey yapma (eski değeri koru)
-        if (digitsOnly.length > 10) {
             return phoneNumber
         }
 
-        // Hata yoksa hata mesajını temizle
+        if (digitsOnly.length > 10) {
+            return phoneNumber
+        }
         showError = false
         errorMessage = ""
 
@@ -84,6 +78,7 @@ fun LoginScreen(
             onContinueClick(phoneNumber)
         }
     }
+
 
     Column(
         modifier = Modifier
@@ -103,7 +98,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Telefon numarası input
         OutlinedTextField(
             value = phoneNumber,
             onValueChange = { newValue ->
@@ -124,7 +118,6 @@ fun LoginScreen(
             singleLine = true
         )
 
-        // Hata mesajı
         if (showError) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -167,8 +160,6 @@ fun LoginScreen(
                 )
             }
         }
-
-        // ViewModel'den gelen hata mesajı
         if (state is LoginState.Error) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(

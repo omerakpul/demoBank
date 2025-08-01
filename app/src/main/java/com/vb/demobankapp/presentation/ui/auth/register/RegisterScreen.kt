@@ -70,7 +70,6 @@ fun RegisterScreen(
 
     val state by viewModel.state.collectAsState()
 
-    // Tarih formatlaması
     fun formatDate(timestamp: Long): String {
         val date = Date(timestamp)
         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -116,7 +115,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Name input
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,7 +151,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Surname input
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,7 +187,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Birthdate input (DatePicker ile)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -274,7 +270,6 @@ fun RegisterScreen(
             }
         }
 
-        // Error Message
         if (state is RegisterState.Error) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -289,7 +284,6 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.weight(1f))
     }
 
-    // DatePicker Dialog
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = System.currentTimeMillis()

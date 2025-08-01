@@ -37,7 +37,6 @@ fun AccountScreen(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
 
-    // Başarılı işlem sonrası geri dön
     LaunchedEffect(state) {
         if (state is AccountState.Success) {
             onBackClick()
@@ -126,7 +125,6 @@ fun AccountScreen(
         }
     }
 
-    // Hesap adı değiştirme popup
     if (showEditDialog) {
         AlertDialog(
             onDismissRequest = { showEditDialog = false },
@@ -157,7 +155,6 @@ fun AccountScreen(
         )
     }
 
-    // Hesap silme uyarısı
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -181,7 +178,6 @@ fun AccountScreen(
         )
     }
 
-    // Loading ve Error durumları
     when (state) {
         is AccountState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

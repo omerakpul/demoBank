@@ -22,7 +22,6 @@ fun NavGraph(
     navController: NavHostController,
     startDestination: String = "splash_screen"
 ) {
-    // Seçili account'ı burada tutuyaoruz
     val selectedAccount = remember { mutableStateOf<AccountInfo?>(null) }
 
     NavHost(
