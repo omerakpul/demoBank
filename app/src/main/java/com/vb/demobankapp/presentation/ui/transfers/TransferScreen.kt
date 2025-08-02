@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -61,14 +61,12 @@ fun TransferScreen(
     val availableAccounts by viewModel.availableAccounts.collectAsState()
     var showRecipientFields by remember { mutableStateOf(false) }
 
-    // State değişikliklerini dinle
     LaunchedEffect(state) {
         when (state) {
             is TransferState.Success -> {
                 onTransferClick()
                 viewModel.resetState()
             }
-            // Error durumunda resetState çağırmıyoruz, kullanıcı görebilsin
             else -> {}
         }
     }
@@ -83,13 +81,12 @@ fun TransferScreen(
             .background(BackgroundCream)
             .padding(16.dp)
     ) {
-        // Header
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = TextDark
                 )
@@ -116,7 +113,6 @@ fun TransferScreen(
             return
         }
 
-        // Hata mesajını göster
         if (state is TransferState.Error) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -151,8 +147,6 @@ fun TransferScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-        // Hesap Seçimi Başlığı
         Text(
             text = "Hesap Seç",
             fontSize = 16.sp,
@@ -161,7 +155,6 @@ fun TransferScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Hesaplar yatayda listeleniyor
         Row(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
@@ -187,10 +180,7 @@ fun TransferScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Seçili Hesap Kartı
         if (selectedAccount != null) {
             Card(
                 modifier = Modifier
@@ -207,8 +197,6 @@ fun TransferScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-        // Alıcı IBAN
         Text(
             text = "Alıcı IBAN",
             fontSize = 16.sp,

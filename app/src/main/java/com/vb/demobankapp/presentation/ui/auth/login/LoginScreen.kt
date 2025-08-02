@@ -133,7 +133,6 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (activity != null) {
-                    // +90 ekleyip gönder
                     val fullNumber = "+90" + phoneNumber
                     viewModel.sendOtp(fullNumber, activity)
                 }

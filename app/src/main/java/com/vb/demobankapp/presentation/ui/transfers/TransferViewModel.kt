@@ -89,7 +89,6 @@ class TransferViewModel @Inject constructor(
             return
         }
 
-        // Kullanıcının tüm hesaplarında bu IBAN var mı kontrol et
         val fullIban = "TR38$iban"
         val isOwnAccount = _availableAccounts.value.any { it.iban == fullIban }
 
